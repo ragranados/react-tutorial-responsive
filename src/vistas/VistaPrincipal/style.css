@@ -1,0 +1,38 @@
+.container{
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+    width: 75vw;
+}
+
+.topContainer {
+    display: flex;
+    flex-direction: column;
+    width: 40vw;
+    margin-bottom: 50px;
+}
+
+.table {
+    width: 80vw;
+}
+
+.buttonAccion {
+    margin-right: 15px;
+}
+
+.tableButton {
+    align-self:end;
+}
+
+.tableHeader {
+    width: 100%
+}
+
+.divBotones {
+    display:flex;
+    flex-direction: column;
+}
+
+.butonesAct {
+    margin-top: 15px;
+}
