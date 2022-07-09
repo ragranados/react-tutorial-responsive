@@ -2,29 +2,47 @@ const axios = require("axios").default;
 const service = {}
 
 service.guardar = async (documento) => {
-    try{
+    try {
         const newDocumento = await axios.post(`${process.env.REACT_APP_URL}/documento/guardar`, {
-            nombre: documento.nombre,
-            apellido: documento.apellido,
-            edad: documento.edad,
-            email: documento.email,
-            foto: documento.foto
+            ...documento
         });
 
         return newDocumento;
-    }catch (e){
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+service.actualizar = async (documento) => {
+    try{
+        const actualizado = await axios.put(`${process.env.REACT_APP_URL}/documento/actualizar`,{
+            ...documento
+        });
+
+        return actualizado;
+    }catch (e) {
         console.log(e);
     }
 }
 
 service.documentos = async () => {
-    try{
+    try {
         const documentos = await axios.get(`${process.env.REACT_APP_URL}/documento/todos`);
 
         console.log(documentos.data.data);
 
         return documentos.data.data;
-    }catch (e) {
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+service.borrar = async (id) => {
+    try {
+        const documentos = await axios.delete(`${process.env.REACT_APP_URL}/documento/borrar/${id}`);
+
+        return documentos.data;
+    } catch (e) {
         console.log(e);
     }
 }

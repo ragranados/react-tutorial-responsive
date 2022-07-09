@@ -32,13 +32,62 @@ const Index = () => {
         });
     };
 
-    const clear = () => {
-        setId(0);
-        setNombre("");
-        setApellido("");
-        setEmail("");
-        setFoto("");
-        setEdad(0);
+    const guardar = async () => {
+        const documento = {
+            nombre,
+            apellido,
+            email,
+            edad,
+            foto
+        };
+
+        const nuevo = await DocumentoService.guardar(documento);
+
+        update();
+
+        toast.current.show({
+            severity: 'success',
+            summary: `${nuevo.data.message}`,
+            detail: `${nombre} insertado con exito`,
+            life: 3000
+        });
+
+        clear();
+
+    }
+
+    const actualizarDocumento = async () => {
+        const actualizado = await DocumentoService.actualizar({
+            id,
+            nombre,
+            apellido,
+            email,
+            edad,
+        });
+
+        update();
+    }
+
+    const borrar = async (id) => {
+        const borrado = await DocumentoService.borrar(id);
+
+        if (borrado.ok) {
+            toast.current.show({
+                severity: 'success',
+                summary: "Ok",
+                detail: `Borrado con exito`,
+                life: 3000
+            });
+        } else {
+            toast.current.show({
+                severity: 'error',
+                summary: 'Fail',
+                detail: `No se pudo borrar`,
+                life: 3000
+            });
+        }
+
+        update();
     }
 
     const update = async () => {
@@ -53,9 +102,13 @@ const Index = () => {
         return () => clearTimeout(timer);
     }
 
-    const actualizarDocumento = () => {
-
-        goToTop();
+    const clear = () => {
+        setId(0);
+        setNombre("");
+        setApellido("");
+        setEmail("");
+        setFoto("");
+        setEdad(0);
     }
 
     const imageBodyTemplate = (rowData) => {
@@ -74,11 +127,19 @@ const Index = () => {
     const ActionsTemplate = (rowData) => {
         return (
             <div>
-                <Button className={"buttonAccion"} label={"Borrar"}/>
+                <Button className={"buttonAccion"} label={"Borrar"} onClick={() => {
+                    console.log(rowData);
+                    borrar(rowData.id);
+                }}/>
 
                 <Button onClick={() => {
-                    console.log(rowData);
                     setActualizando(true);
+
+                    setId(rowData.id);
+                    setNombre(rowData.nombre);
+                    setApellido(rowData.apellido);
+                    setEmail(rowData.email);
+                    setEdad(rowData.edad);
 
                     goToTop();
                 }} label={"Actualizar"}/>
@@ -91,30 +152,6 @@ const Index = () => {
             Documentos
         </div>
     );
-
-    const guardar = async () => {
-        const documento = {
-            nombre,
-            apellido,
-            email,
-            edad,
-            foto
-        };
-
-        const nuevo = await DocumentoService.guardar(documento);
-
-        update();
-
-        toast.current.show({
-            severity: 'success',
-            summary: 'nuevo.data.message',
-            detail: `${nombre} insertado con exito`,
-            life: 3000
-        });
-
-        clear();
-
-    }
 
     const onBasicUpload = () => {
 
@@ -146,9 +183,11 @@ const Index = () => {
                         guardar()
                     }}/>
                     :
-                    <div className={"divBotones"} >
+                    <div className={"divBotones"}>
                         <Button label="Actualizar" onClick={() => {
-
+                            actualizarDocumento();
+                            setActualizando(false);
+                            clear();
                         }}/>
                         <Button className={"butonesAct"} label="Cancelar" onClick={() => {
                             setActualizando(false);
@@ -165,6 +204,7 @@ const Index = () => {
                         <Column field="id" header="Id"></Column>
                         <Column header="Foto" body={imageBodyTemplate}></Column>
                         <Column field="nombre" header="Nombre"></Column>
+                        <Column field="apellido" header="Apellido"></Column>
                         <Column field="edad" header="Edad"></Column>
                         <Column field="email" header="Email"></Column>
                         <Column header="Actiones" body={ActionsTemplate}></Column>
