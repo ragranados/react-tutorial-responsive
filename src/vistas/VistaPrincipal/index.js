@@ -68,6 +68,12 @@ const Index = () => {
         update();
     }
 
+    const subirFoto = (a) => {
+        let name = a.xhr.response.slice(1);
+        name= name.slice(0, -1);
+        setFoto(name);
+    }
+
     const borrar = async (id) => {
         const borrado = await DocumentoService.borrar(id);
 
@@ -117,7 +123,7 @@ const Index = () => {
                 <img
                     width={100}
                     height={100}
-                    src={`https://xavierferras.com/wp-content/uploads/2019/02/266-Persona.jpg`}
+                    src={`${process.env.REACT_APP_URL}/documento/archivo/${rowData.foto}`}
                     onError={(e) => e.target.src = 'https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'}
                     alt={rowData.image} className="product-image"/>
             </div>
@@ -174,8 +180,8 @@ const Index = () => {
                 <InputText value={edad} onChange={(e) => setEdad(e.target.value)}/>
 
                 <div className={"Button-submit"}>
-                    <FileUpload mode="basic" name="demo[]" url={foto} accept="image/*" maxFileSize={1000000}
-                                onUpload={onBasicUpload}/>
+                    <h5>Basic</h5>
+                    <FileUpload mode="basic" name="file" url={`${process.env.REACT_APP_URL}/documento/imagen`} accept="image/*" maxFileSize={1000000} onUpload={subirFoto} />
                 </div>
 
                 {!actualizando ?
