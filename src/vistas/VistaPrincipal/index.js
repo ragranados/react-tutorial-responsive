@@ -7,6 +7,7 @@ import DocumentoService from '../../servicios/documento'
 import {DataTable} from 'primereact/datatable';
 import {Column} from 'primereact/column';
 import {Toast} from "primereact/toast";
+import {InputNumber} from "primereact/inputnumber";
 
 const Index = () => {
     const toast = useRef(null);
@@ -14,8 +15,8 @@ const Index = () => {
     const [nombre, setNombre] = useState("");
     const [apellido, setApellido] = useState("");
     const [email, setEmail] = useState("");
-    const [edad, setEdad] = useState(0);
-    const [foto, setFoto] = useState("");
+    const [edad, setEdad] = useState(1);
+    const [foto, setFoto] = useState(null);
     const [documentos, setDocumentos] = useState([]);
     const [actualizando, setActualizando] = useState(false);
 
@@ -70,7 +71,7 @@ const Index = () => {
 
     const subirFoto = (a) => {
         let name = a.xhr.response.slice(1);
-        name= name.slice(0, -1);
+        name = name.slice(0, -1);
         setFoto(name);
     }
 
@@ -177,16 +178,27 @@ const Index = () => {
                 <InputText value={email} onChange={(e) => setEmail(e.target.value)}/>
 
                 <h4>Edad</h4>
-                <InputText value={edad} onChange={(e) => setEdad(e.target.value)}/>
+                <InputNumber mode={"decimal"} value={edad} onChange={(e) => setEdad(e.value)} showButtons min={0}
+                             max={110}/>
 
                 <div className={"Button-submit"}>
-                    <h5>Basic</h5>
-                    <FileUpload mode="basic" name="file" url={`${process.env.REACT_APP_URL}/documento/imagen`} accept="image/*" maxFileSize={1000000} onUpload={subirFoto} />
+                    {foto ? <h5>{`Se ha seleccionado el archivo: ${foto}`}</h5> :
+                        <FileUpload mode="basic" name="file" url={`${process.env.REACT_APP_URL}/documento/imagen`}
+                                    accept="image/*" auto maxFileSize={1000000} onUpload={subirFoto}/>}
                 </div>
 
                 {!actualizando ?
                     <Button label="Submit" onClick={() => {
-                        guardar()
+                        if (!foto) {
+                            toast.current.show({
+                                severity: 'error',
+                                summary: 'Error',
+                                detail: `Primero debe seleccionar una foto`,
+                                life: 3000
+                            });
+                        } else {
+                            guardar()
+                        }
                     }}/>
                     :
                     <div className={"divBotones"}>
