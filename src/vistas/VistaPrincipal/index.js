@@ -174,21 +174,32 @@ const Index = () => {
                 <h4>Apellido</h4>
                 <InputText value={apellido} onChange={(e) => setApellido(e.target.value)}/>
 
-                <h4>Email</h4>
+                <h4>Numero de documento</h4>
                 <InputText value={email} onChange={(e) => setEmail(e.target.value)}/>
 
                 <h4>Edad</h4>
                 <InputNumber mode={"decimal"} value={edad} onChange={(e) => setEdad(e.value)} showButtons min={0}
                              max={110}/>
 
-                <div className={"Button-submit"}>
-                    {foto ? <h5>{`Se ha seleccionado el archivo: ${foto}`}</h5> :
-                        <FileUpload mode="basic" name="file" url={`${process.env.REACT_APP_URL}/documento/imagen`}
-                                    accept="image/*" auto maxFileSize={1000000} onUpload={subirFoto}/>}
-                </div>
+                {actualizando ? null :
+                    <div className={"Button-submit"}>
+                        {foto ? <h5>{`Se ha seleccionado el archivo: ${foto}`}</h5> :
+                            <div className={"divUploadButton"}>
+                                <FileUpload className={"buttonAccion"}
+                                            mode="basic" name="file"
+                                            url={`${process.env.REACT_APP_URL}/documento/imagen`}
+                                            accept="image/*" auto maxFileSize={1000000} onUpload={subirFoto}/>
+
+                                <h5>Seleccionar un archivo (.jpg o .png)}</h5>
+
+                            </div>
+                        }
+
+                    </div>}
 
                 {!actualizando ?
-                    <Button label="Submit" onClick={() => {
+                    <Button
+                        label="Submit" onClick={() => {
                         if (!foto) {
                             toast.current.show({
                                 severity: 'error',
@@ -202,7 +213,8 @@ const Index = () => {
                     }}/>
                     :
                     <div className={"divBotones"}>
-                        <Button label="Actualizar" onClick={() => {
+                        <Button className={"Button-submit"}
+                                label="Actualizar" onClick={() => {
                             actualizarDocumento();
                             setActualizando(false);
                             clear();
@@ -219,12 +231,11 @@ const Index = () => {
             <div className="implementation datatable-templating-demo table">
                 <div className="card">
                     <DataTable value={documentos} header={header} responsiveLayout="scroll">
-                        <Column field="id" header="Id"></Column>
                         <Column header="Foto" body={imageBodyTemplate}></Column>
+                        <Column field="email" header="Numero Documento"></Column>
                         <Column field="nombre" header="Nombre"></Column>
                         <Column field="apellido" header="Apellido"></Column>
                         <Column field="edad" header="Edad"></Column>
-                        <Column field="email" header="Email"></Column>
                         <Column header="Actiones" body={ActionsTemplate}></Column>
                     </DataTable>
                 </div>

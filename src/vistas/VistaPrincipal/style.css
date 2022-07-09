@@ -36,3 +36,8 @@
 .butonesAct {
     margin-top: 15px;
 }
+
+.divUploadButton {
+    display: flex;
+    flex-direction:row;
+}
